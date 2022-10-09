@@ -18,7 +18,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping
 public class ShortUrlController {
 
     private final ShortUrlDtoConverter shortUrlDtoConverter;
@@ -44,15 +44,13 @@ public class ShortUrlController {
                 shortUrlDtoConverter.convertToDto(shortUrlService.getUrlByCode(code)));
     }
 
-    @GetMapping("/redirect")
+    @GetMapping("/{code}")
     public ResponseEntity<ShortUrlDto> redirect(@Valid @NotEmpty @PathVariable String code) throws URISyntaxException {
         ShortUrl shortUrl = shortUrlService.getUrlByCode(code);
         URI uri = new URI(shortUrl.getUrl());
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(uri);
-        return new ResponseEntity<>(
-            httpHeaders,HttpStatus.SEE_OTHER
-        );
+        return ResponseEntity.status(HttpStatus.SEE_OTHER).headers(httpHeaders).build();
     }
 
     @PostMapping

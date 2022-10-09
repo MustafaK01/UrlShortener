@@ -1,5 +1,7 @@
 package com.example.urlshortener.service;
 
+import com.example.urlshortener.exception.CodeAlreadyExistsException;
+import com.example.urlshortener.exception.ShortUrlNotFoundException;
 import com.example.urlshortener.model.ShortUrl;
 import com.example.urlshortener.repository.ShortUrlRepository;
 import com.example.urlshortener.util.RandomStringGenerator;
@@ -13,7 +15,8 @@ public class ShortUrlService{
     private final RandomStringGenerator randomStringGenerator;
     private final ShortUrlRepository shortUrlRepository;
 
-    public ShortUrlService(RandomStringGenerator randomStringGenerator, ShortUrlRepository shortUrlRepository) {
+    public ShortUrlService(RandomStringGenerator randomStringGenerator,
+                           ShortUrlRepository shortUrlRepository) {
         this.randomStringGenerator = randomStringGenerator;
         this.shortUrlRepository = shortUrlRepository;
     }
@@ -22,7 +25,7 @@ public class ShortUrlService{
         if(shortUrl.getCode().isEmpty() || shortUrl.getCode() == null){
             shortUrl.setCode(generateCode());
         }else if(shortUrlRepository.findAllByCode(shortUrl.getCode()).isPresent()){
-            throw new RuntimeException("Zaten Var");
+            throw new CodeAlreadyExistsException("Code already exists");
         }
         shortUrl.setCode(shortUrl.getCode().toUpperCase());
         return shortUrlRepository.save(shortUrl);
@@ -33,13 +36,13 @@ public class ShortUrlService{
     }
 
     public ShortUrl getUrlByCode(String code) {
-        return shortUrlRepository.findAllByCode(code).orElseThrow(
-                ()->new RuntimeException("Bulunamadı")
+        return shortUrlRepository.findAllByCode(code.toUpperCase()).orElseThrow(
+                ()->new ShortUrlNotFoundException("Url not found !")
         );
     }
 
     private String generateCode(){
-        String code ;
+        String code;
         do {
             code = this.randomStringGenerator.generateRandomString();
         }while(shortUrlRepository.findAllByCode(code).isPresent());

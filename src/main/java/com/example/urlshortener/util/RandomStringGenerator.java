@@ -22,7 +22,7 @@ public class RandomStringGenerator {
                .collect(Collectors.toList());
         Collections.shuffle(letters);
         for (int i = 0; i < codeLength; i++) {
-            generated += letters.get(random.nextInt());
+            generated += letters.get(random.nextInt(letters.size()));
         }
         return generated;
     }

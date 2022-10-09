@@ -17,5 +17,6 @@ public class ShortUrlRequest {
     @NotNull
     @NotEmpty
     private String url;
+
     private String code;
 }
