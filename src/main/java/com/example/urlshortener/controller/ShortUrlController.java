@@ -34,16 +34,14 @@ public class ShortUrlController {
 
     @GetMapping("/getAllUrls")
     public ResponseEntity<List<ShortUrlDto>> getAllUrls(){
-        return new ResponseEntity<List<ShortUrlDto>>(
-                shortUrlDtoConverter.convertToDto(shortUrlService.getAllShortUrls()), HttpStatus.OK
-        );
+        return ResponseEntity.ok().body(
+                shortUrlDtoConverter.convertToDto(shortUrlService.getAllShortUrls()));
     }
 
     @GetMapping("/showUrl/{code}")
     public ResponseEntity<ShortUrlDto> getUrlByCode(@Valid @NotEmpty @PathVariable String code){
-        return new ResponseEntity<>(
-                shortUrlDtoConverter.convertToDto(shortUrlService.getUrlByCode(code)), HttpStatus.OK
-        );
+        return ResponseEntity.ok().body(
+                shortUrlDtoConverter.convertToDto(shortUrlService.getUrlByCode(code)));
     }
 
     @GetMapping("/redirect")
@@ -60,9 +58,8 @@ public class ShortUrlController {
     @PostMapping
     public ResponseEntity<?> createShortUrl(@Valid @RequestBody ShortUrlRequest shortUrlRequest){
         ShortUrl shortUrl = this.shortUrlRequestConverter.convertToEntity(shortUrlRequest);
-        return new ResponseEntity<ShortUrlDto>(
-                shortUrlDtoConverter.convertToDto(shortUrlService.createShortUrl(shortUrl)),HttpStatus.CREATED
-        );
+        return ResponseEntity.ok().body(
+                shortUrlDtoConverter.convertToDto(shortUrlService.createShortUrl(shortUrl)));
     }
 
 

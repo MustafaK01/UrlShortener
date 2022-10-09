@@ -2,6 +2,7 @@ package com.example.urlshortener.service;
 
 import com.example.urlshortener.model.ShortUrl;
 import com.example.urlshortener.repository.ShortUrlRepository;
+import com.example.urlshortener.util.RandomStringGenerator;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,9 +10,11 @@ import java.util.List;
 @Service
 public class ShortUrlService{
 
+    private final RandomStringGenerator randomStringGenerator;
     private final ShortUrlRepository shortUrlRepository;
 
-    public ShortUrlService(ShortUrlRepository shortUrlRepository) {
+    public ShortUrlService(RandomStringGenerator randomStringGenerator, ShortUrlRepository shortUrlRepository) {
+        this.randomStringGenerator = randomStringGenerator;
         this.shortUrlRepository = shortUrlRepository;
     }
 
@@ -36,6 +39,10 @@ public class ShortUrlService{
     }
 
     private String generateCode(){
-        return null;
+        String code ;
+        do {
+            code = this.randomStringGenerator.generateRandomString();
+        }while(shortUrlRepository.findAllByCode(code).isPresent());
+        return code;
     }
 }
